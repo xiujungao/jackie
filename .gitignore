@@ -1,6 +1,1 @@
-spring-boot-hello-world/pom.xml
-spring-boot-hello-world/target/classes/application.properties
-spring-boot-hello-world/target/classes/com/mkyong/HelloController.class
-spring-boot-hello-world/target/classes/com/mkyong/MainApplication.class
-spring-boot-hello-world/target/test-classes/com/mkyong/HelloControllerTests.class
-spring-boot-hello-world/target/test-classes/com/mkyong/HelloControllerTests2.class
+spring-boot-hello-world/target
