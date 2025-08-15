@@ -1,10 +1,15 @@
 # Set variables
 $AppName = "hello-world"  # Name of your application
-$ImageStream = "registry.redhat.io/ubi8/openjdk-21-runtime:1.18"
+$ImageStream = "registry.access.redhat.com/ubi8/openjdk-21:1.18"
 
 # Log in to CRC OpenShift (make sure CRC is running)
 crc console --credentials
 oc login -u developer -p developer https://api.crc.testing:6443
+
+# Create a new project (namespace) for your application
+# If the project already exists, this will not create a new one
+# You can also use `oc project jackie` to switch to an existing project
+oc new-project jackie *> $null
 
 # Delete a BuildConfig named 'hello-world'
 oc delete bc $AppName *> $null
@@ -15,17 +20,26 @@ oc delete build -l buildconfig=hello-world *> $null
 # Delete an ImageStream named 'hello-world'
 oc delete is hello-world *> $null
 
+# Import the image into an ImageStream first
+# oc import-image openjdk-21-runtime:1.18 --from=ImageStream --confirm
 # Create a new build config using the local image
-oc new-build $ImageStream --name=$AppName --binary=false --strategy=source https://github.com/xiujungao/jackie.git --context-dir=spring-boot-hello-world
+# oc new-build openjdk-21-runtime:1.18 --name=hello-world https://github.com/xiujungao/jackie.git --context-dir=spring-boot-hello-world --strategy=source
 
-# Start a binary build from your local project directory
-oc start-build $AppName --follow
+# Create a new build config using the remote image
+oc new-app $ImageStream --name=$AppName https://github.com/xiujungao/jackie.git --context-dir=spring-boot-hello-world --strategy=source
 
-# Deploy the built image
-oc new-app $AppName
+# Monitor the build
+# This may take a few minutes the first time, as it clones the repo, runs Maven (or Gradle if applicable), and builds the image
+oc logs -f buildconfig/$AppName
+
+# Once the build succeeds, the app will deploy as a pod. Check the status
+oc get pods
 
 # Expose a route to access the app
 oc expose svc/$AppName
 
 # Get the URL of the app
-oc get route $AppName --template='{{ .spec.host }}'
+# NAME          HOST/PORT                             PATH   SERVICES      PORT       TERMINATION   WILDCARD
+# hello-world   hello-world-jackie.apps-crc.testing          hello-world   8080-tcp                 None
+# http://hello-world-jackie.apps-crc.testing/
+oc get route $AppName
