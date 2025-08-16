@@ -43,3 +43,8 @@ oc expose svc/$AppName
 # hello-world   hello-world-jackie.apps-crc.testing          hello-world   8080-tcp                 None
 # http://hello-world-jackie.apps-crc.testing/
 oc get route $AppName
+
+
+# after make change to the code, you can run the following command to trigger a new build
+oc start-build $AppName --follow -n jackie
+

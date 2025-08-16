@@ -12,7 +12,7 @@ public class HelloController {
     }
 
     @RequestMapping("/abc")
-    String hello() {
+    String hello_abc() {
         return "Hello World, Spring Boot abc!";
     }
 
