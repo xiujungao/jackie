@@ -43,3 +43,10 @@ oc expose svc/$AppName
 # hello-world   hello-world-jackie.apps-crc.testing          hello-world   8080-tcp                 None
 # http://hello-world-jackie.apps-crc.testing/
 oc get route $AppName
+
+
+# after make change to the code, you can run the following command to trigger a new build
+# after the buld is done, you can access the app at the URL provided by the route command
+# nothing else to do, the app will be automatically redeployed
+oc start-build $AppName --follow -n jackie
+
