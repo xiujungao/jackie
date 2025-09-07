@@ -18,6 +18,7 @@ spec:
       containers:
         - name: hello-world
           image: image-registry.openshift-image-registry.svc:5000/jackie/hello-world:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               protocol: TCP
