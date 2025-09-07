@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  namespace: jackie
+  labels:
+    app: hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+        - name: hello-world
+          image: image-registry.openshift-image-registry.svc:5000/jackie/hello-world:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx512m"
+            - name: STORAGE_PATH
+              value: "/data" # path inside the container
+          volumeMounts:
+            - name: app-data
+              mountPath: /data # mount the volume at /data inside the container
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: hello-world-pvc # reference to the PVC
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: hello-world
+              topologyKey: kubernetes.io/hostname
+      schedulerName: default-scheduler
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: hello-world

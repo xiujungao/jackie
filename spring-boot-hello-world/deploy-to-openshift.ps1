@@ -27,6 +27,16 @@ oc delete is hello-world *> $null
 
 # Create a new build config using the remote image
 oc new-app $ImageStream --name=$AppName https://github.com/xiujungao/jackie.git --context-dir=spring-boot-hello-world --strategy=source
+# This step can be break down into two steps:
+# oc create imagestream $AppName
+# oc create buildconfig hello-world \
+#  --image-stream=ubi8/openjdk-21:1.18 \
+#  --strategy=source \
+#  --source-repo=https://github.com/xiujungao/jackie.git \
+#  --source-context-dir=spring-boot-hello-world \
+#  --to-image-stream=hello-world:latest
+
+
 
 # Monitor the build
 # This may take a few minutes the first time, as it clones the repo, runs Maven (or Gradle if applicable), and builds the image
@@ -50,3 +60,5 @@ oc get route $AppName
 # nothing else to do, the app will be automatically redeployed
 oc start-build $AppName --follow -n jackie
 
+# Scale the deployment to have 2 replicas 
+oc autoscale deployment hello-world  --cpu-percent=80 --min=2 --max=10
