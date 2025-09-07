@@ -5,15 +5,20 @@ metadata:
   namespace: jackie
   labels:
     app: hello-world
+    deployment: hello-world
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"hello-world:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"hello-world\")].image"}]'
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello-world
+      deployment: hello-world
   template:
     metadata:
       labels:
         app: hello-world
+        deployment: hello-world
     spec:
       containers:
         - name: hello-world
