@@ -48,6 +48,9 @@ oc get pods
 # Expose a route to access the app
 oc expose svc/$AppName
 
+# Expose a route with TLS/SSL
+oc create route edge $AppName --service=$AppName --port=8080 #--cert=path/to/cert.crt --key=path/to/key.key --ca-cert=path/to/ca.crt
+
 # Get the URL of the app
 # NAME          HOST/PORT                             PATH   SERVICES      PORT       TERMINATION   WILDCARD
 # hello-world   hello-world-jackie.apps-crc.testing          hello-world   8080-tcp                 None

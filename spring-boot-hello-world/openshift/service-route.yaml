@@ -27,3 +27,6 @@ spec:
     name: hello-world
   port:
     targetPort: 8080
+  tls:
+    termination: edge # Use 'edge' for TLS termination at the router
+    insecureEdgeTerminationPolicy: Redirect # Redirect HTTP to HTTPS
