@@ -24,7 +24,7 @@ public class HelloController {
     @RequestMapping("/")
     String hello() {
         log.info("Accessed root endpoint");
-        return "Hello World, Spring Boot!";
+        return "Hello World, Spring Boot--!";
     }
 
     @GetMapping("/message")
@@ -42,7 +42,7 @@ public class HelloController {
             Files.writeString(FILE_PATH, content);
 
             content = Files.readString(FILE_PATH);
-            return "File content: " + content;
+            return "File content--: " + content;
         } catch (IOException e) {
             log.error("Failed to read file1.txt from /data", e);
             return "Error reading file: " + e.getMessage();
