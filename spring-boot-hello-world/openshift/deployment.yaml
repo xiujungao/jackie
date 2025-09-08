@@ -53,7 +53,7 @@ spec:
             - name: app-data
               mountPath: /data # mount the volume at /data inside the container
             - name: db-secret-volume
-              mountPath: /etc/secrets
+              mountPath: /etc/creds # mount the secret at /etc/creds
               readOnly: true # mount the secret as read-only
       volumes:
         - name: app-data
