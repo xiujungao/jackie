@@ -1,4 +1,4 @@
-package com.mkyong;
+package com.mkyong.k8;
 
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.client.KubernetesClient;

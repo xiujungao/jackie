@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mkyong.k8.SecretService;
+
 @RestController
 public class HelloController {
     private static final Logger log = LoggerFactory.getLogger(HelloController.class);
