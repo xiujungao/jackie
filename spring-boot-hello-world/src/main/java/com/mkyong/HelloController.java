@@ -23,16 +23,19 @@ public class HelloController {
 
     @RequestMapping("/")
     String hello() {
+        log.info("Accessed root endpoint");
         return "Hello World, Spring Boot!";
     }
 
     @GetMapping("/message")
     public String getMessage() {
+        log.info("Accessed message endpoint");
         return "Message: " + message;
     }
 
     @RequestMapping("/file")
     String readFile() throws IOException {
+        log.info("Accessed file endpoint");
         // PVC is mounted at /data
         try {
             String content = "Hello, this is some text written at " + java.time.LocalDateTime.now();
