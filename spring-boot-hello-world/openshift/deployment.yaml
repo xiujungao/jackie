@@ -39,6 +39,16 @@ spec:
               value: "-Xms256m -Xmx512m"
             - name: STORAGE_PATH
               value: "/data" # path inside the container
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
           volumeMounts:
             - name: app-data
               mountPath: /data # mount the volume at /data inside the container
