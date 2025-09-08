@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -66,6 +67,7 @@ public class SecretService {
     /** Periodic refresh (e.g., every 30s). Tune as needed. */
     @Scheduled(fixedDelayString = "30000")
     public void scheduledRefresh() {
+        log.info("scheduled refresh at {}", LocalDateTime.now());
         try {
             reload();
         } catch (Exception ignored) {
@@ -76,12 +78,16 @@ public class SecretService {
     /** Detect the running namespace (Downward API preferred; fallback to file). */
     private static String detectNamespace() {
         String ns = System.getenv("POD_NAMESPACE");
-        if (ns != null && !ns.isBlank())
+        if (ns != null && !ns.isBlank()) {
+            log.info("detected namespace from env: {}", ns);
             return ns;
+        }
         try {
+            log.info("read namespace from file: {}", ns);
             return Files.readString(Path.of("/var/run/secrets/kubernetes.io/serviceaccount/namespace"))
                     .trim();
         } catch (Exception e) {
+            log.info("default namespace from file: {}", ns);
             // local dev fallback; set your namespace here when running outside cluster
             return "jackie";
         }
