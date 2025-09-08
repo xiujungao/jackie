@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,10 +25,7 @@ public class SecretService {
     private final KubernetesClient client;
     private final String namespace;
     private final String secretName = "db-secret";
-    private final AtomicReference<Creds> cache = new AtomicReference<>(new Creds("", ""));
-
-    public record Creds(String username, String password) {
-    }
+    private final AtomicReference<Map<String, String>> cache = new AtomicReference<>(Collections.emptyMap());
 
     public SecretService(KubernetesClient client) {
         this.client = client;
@@ -37,8 +36,56 @@ public class SecretService {
     }
 
     /** Read current creds (cached). Call reload() if you need to force-refresh. */
-    public Creds current() {
+    public Map<String, String> current() {
         return cache.get();
+    }
+
+    /**
+     * Add or update a key-value pair in the given secret. Value is plain text (not
+     * base64).
+     */
+    public Secret addKeyValueToSecret(String key, String value) {
+        // 1. Get the existing secret
+        Secret existing = client.secrets()
+                .inNamespace(namespace)
+                .withName(secretName)
+                .get();
+
+        if (existing == null) {
+            throw new RuntimeException("Secret " + secretName + " not found in namespace " + namespace);
+        }
+
+        // 2. Copy existing data (may be null if secret was empty)
+        Map<String, String> data = existing.getData();
+        if (data == null) {
+            data = new HashMap<>();
+        } else {
+            data = new HashMap<>(data); // avoid modifying immutable map
+        }
+
+        // 3. Add/replace the key with base64-encoded value
+        String encodedValue = Base64.getEncoder()
+                .encodeToString(value.getBytes(StandardCharsets.UTF_8));
+        data.put(key, encodedValue);
+
+        existing.setData(data);
+
+        // 4. Update secret in cluster
+        Secret updated = client.secrets()
+                .inNamespace(namespace)
+                .withName(secretName)
+                .patch(existing);
+
+        // If it’s the tracked db-secret, refresh cache
+        if (secretName.equals(this.secretName)) {
+            Map<String, String> decoded = new HashMap<>();
+            for (Map.Entry<String, String> e : data.entrySet()) {
+                decoded.put(e.getKey(), decode(e.getValue()));
+            }
+            cache.set(decoded);
+        }
+
+        return updated;
     }
 
     /** Force-refresh now (blocking). */
@@ -52,10 +99,15 @@ public class SecretService {
             // keep old cache; you may want to throw instead
             return;
         }
+
+        Map<String, String> decoded = new HashMap<>();
         Map<String, String> data = sec.getData(); // base64-encoded values
-        String user = decode(data.get("username"));
-        String pass = decode(data.get("password"));
-        cache.set(new Creds(user, pass));
+        if (data != null) {
+            for (Map.Entry<String, String> e : data.entrySet()) {
+                decoded.put(e.getKey(), decode(e.getValue()));
+            }
+        }
+        cache.set(decoded);
     }
 
     private static String decode(String b64) {
@@ -70,10 +122,10 @@ public class SecretService {
         log.info("scheduled refresh at {}", LocalDateTime.now());
         try {
             reload();
-            log.info(cache.get().toString());
         } catch (Exception ignored) {
             // optional: log a warning
         }
+        log.info(cache.get().toString());
     }
 
     /** Detect the running namespace (Downward API preferred; fallback to file). */

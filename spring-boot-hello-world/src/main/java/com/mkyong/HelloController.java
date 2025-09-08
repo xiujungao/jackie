@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mkyong.k8.SecretService;
+import java.util.Map;
 
 @RestController
 public class HelloController {
@@ -46,13 +47,21 @@ public class HelloController {
     }
 
     @GetMapping("/kubesecret")
-    public Object kubesecret() {
-        SecretService.Creds c = secretService.current();
+    public Map<String, String> kubesecret() {
+        log.info("Accessed kubesecret endpoint");
+        Map<String, String> c = secretService.current();
         // mask values; never log real secrets
-        return new Object() {
-            public final String username = mask(c.username());
-            public final String password = mask(c.password());
-        };
+        return c;
+    }
+
+    @GetMapping("/kubesecret/new")
+    public Map<String, String> addNewSecret() {
+        log.info("Accessed addNewSecret endpoint");
+        String newKey = "url";
+        String newValue = "https://example.com/";
+        secretService.addKeyValueToSecret(newKey, newValue);
+        Map<String, String> c = secretService.current();
+        return c;
     }
 
     private static String mask(String s) {
