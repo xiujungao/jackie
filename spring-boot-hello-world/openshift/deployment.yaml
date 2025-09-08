@@ -52,10 +52,16 @@ spec:
           volumeMounts:
             - name: app-data
               mountPath: /data # mount the volume at /data inside the container
+            - name: db-secret-volume
+              mountPath: /etc/secrets
+              readOnly: true # mount the secret as read-only
       volumes:
         - name: app-data
           persistentVolumeClaim:
             claimName: hello-world-pvc # reference to the PVC
+        - name: db-secret-volume
+          secret:
+            secretName: db-secret
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

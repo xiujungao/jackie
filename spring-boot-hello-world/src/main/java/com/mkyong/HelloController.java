@@ -27,10 +27,26 @@ public class HelloController {
     @Value("${DB_PASSWORD}")
     private String password;
 
+    private static final Path USER_PATH = Path.of("/etc/creds/username");
+    private static final Path PASS_PATH = Path.of("/etc/creds/password");
+
     @RequestMapping("/")
     String hello() {
         log.info("Accessed root endpoint");
         return "Hello World, Spring Boot--username: " + username + ", password: " + password;
+    }
+
+    @RequestMapping("/filesecret")
+    String filesecret() {
+        log.info("Accessed filesecret endpoint");
+        try {
+            String fileUsername = Files.readString(USER_PATH).trim();
+            String filePassword = Files.readString(PASS_PATH).trim();
+            return "Hello World, Spring Boot--username: " + fileUsername + ", password: " + filePassword;
+        } catch (IOException e) {
+            log.error("Failed to read secrets from files", e);
+            return "Error reading secrets: " + e.getMessage();
+        }
     }
 
     @GetMapping("/message")
