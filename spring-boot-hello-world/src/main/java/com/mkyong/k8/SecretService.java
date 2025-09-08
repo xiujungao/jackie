@@ -65,11 +65,12 @@ public class SecretService {
     }
 
     /** Periodic refresh (e.g., every 30s). Tune as needed. */
-    @Scheduled(fixedDelayString = "30000")
+    @Scheduled(fixedDelayString = "60000")
     public void scheduledRefresh() {
         log.info("scheduled refresh at {}", LocalDateTime.now());
         try {
             reload();
+            log.info(cache.get().toString());
         } catch (Exception ignored) {
             // optional: log a warning
         }
