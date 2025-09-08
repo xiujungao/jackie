@@ -18,6 +18,7 @@ public class HelloController {
 
     private static final Path FILE_PATH = Paths.get("/data/file1.txt");
 
+    // read from application.properties
     @Value("${app.message}")
     private String message;
 
@@ -30,10 +31,33 @@ public class HelloController {
     private static final Path USER_PATH = Path.of("/etc/creds/username");
     private static final Path PASS_PATH = Path.of("/etc/creds/password");
 
+    private final SecretService secretService;
+
+    public HelloController(SecretService secretService) {
+        this.secretService = secretService;
+    }
+
     @RequestMapping("/")
     String hello() {
         log.info("Accessed root endpoint");
         return "Hello World, Spring Boot--username: " + username + ", password: " + password;
+    }
+
+    @GetMapping("/kubesecret")
+    public Object kubesecret() {
+        SecretService.Creds c = secretService.current();
+        // mask values; never log real secrets
+        return new Object() {
+            public final String username = mask(c.username());
+            public final String password = mask(c.password());
+        };
+    }
+
+    private static String mask(String s) {
+        if (s == null || s.isEmpty())
+            return "";
+        int keep = Math.min(2, s.length());
+        return s.substring(0, keep) + "******";
     }
 
     @RequestMapping("/filesecret")
@@ -49,15 +73,15 @@ public class HelloController {
         }
     }
 
-    @GetMapping("/message")
+    @GetMapping("/application.properties")
     public String getMessage() {
-        log.info("Accessed message endpoint");
+        log.info("Accessed application.properties endpoint");
         return "Message: " + message;
     }
 
-    @RequestMapping("/file")
+    @RequestMapping("/persistent")
     String readFile() throws IOException {
-        log.info("Accessed file endpoint");
+        log.info("Accessed persistent endpoint");
         // PVC is mounted at /data
         try {
             String content = "Hello, this is some text written at " + java.time.LocalDateTime.now();

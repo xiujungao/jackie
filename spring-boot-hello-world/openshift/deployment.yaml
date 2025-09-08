@@ -20,6 +20,8 @@ spec:
         app: hello-world
         deployment: hello-world
     spec:
+      serviceAccountName: hello-world-sa
+      restartPolicy: Always
       containers:
         - name: hello-world
           image: image-registry.openshift-image-registry.svc:5000/jackie/hello-world:latest
@@ -37,6 +39,10 @@ spec:
           env:
             - name: JAVA_OPTS
               value: "-Xms256m -Xmx512m"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: STORAGE_PATH
               value: "/data" # path inside the container
             - name: DB_USERNAME

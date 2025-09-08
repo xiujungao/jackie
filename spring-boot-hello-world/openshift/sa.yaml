@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hello-world-sa
+  namespace: jackie
+  labels:
+    app: hello-world
+    serviceaccount: hello-world-sa

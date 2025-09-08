@@ -31,7 +31,14 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+
+        <!-- Fabric8 Kubernetes client -->
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+            <version>6.12.1</version> <!-- use latest if newer -->
+        </dependency>
+            </dependencies>
 
     <build>
         <plugins>
