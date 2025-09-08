@@ -21,10 +21,16 @@ public class HelloController {
     @Value("${app.message}")
     private String message;
 
+    // read from environment variables from secret
+    @Value("${DB_USERNAME}")
+    private String username;
+    @Value("${DB_PASSWORD}")
+    private String password;
+
     @RequestMapping("/")
     String hello() {
         log.info("Accessed root endpoint");
-        return "Hello World, Spring Boot--!";
+        return "Hello World, Spring Boot--username: " + username + ", password: " + password;
     }
 
     @GetMapping("/message")
