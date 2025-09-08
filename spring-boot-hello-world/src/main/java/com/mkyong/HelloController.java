@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,14 +18,17 @@ public class HelloController {
 
     private static final Path FILE_PATH = Paths.get("/data/file1.txt");
 
+    @Value("${app.message}")
+    private String message;
+
     @RequestMapping("/")
     String hello() {
         return "Hello World, Spring Boot!";
     }
 
-    @RequestMapping("/abc")
-    String hello_abc() {
-        return "Hello World, Spring Boot abc!";
+    @GetMapping("/message")
+    public String getMessage() {
+        return "Message: " + message;
     }
 
     @RequestMapping("/file")
