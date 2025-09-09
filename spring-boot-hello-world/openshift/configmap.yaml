@@ -5,3 +5,7 @@ metadata:
   namespace: jackie
 data:
   greeting: "Hello, OpenShift!" # Example configuration data
+  properties: |
+    # Application configuration properties
+    app.name=HelloWorldApp
+    app.version=1.0.0

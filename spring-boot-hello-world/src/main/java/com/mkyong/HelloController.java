@@ -33,6 +33,12 @@ public class HelloController {
     @Value("${GREETING}")
     private String greeting;
 
+    // read from application.properties - configmap mounted as file
+    @Value("${app.name}")
+    private String appName;
+    @Value("${app.version}")
+    private String appVersion;
+
     private static final Path USER_PATH = Path.of("/etc/creds/username");
     private static final Path PASS_PATH = Path.of("/etc/creds/password");
 
@@ -48,7 +54,7 @@ public class HelloController {
     String hello() {
         log.info("Accessed root endpoint");
         return "Hello World, Spring Boot--username: " + username + ", password: " + password + ", greeting: "
-                + greeting;
+                + greeting + ", appName: " + appName + ", appVersion: " + appVersion;
     }
 
     @GetMapping("/kubesecret")

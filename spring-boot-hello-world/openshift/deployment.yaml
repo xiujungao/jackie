@@ -60,6 +60,8 @@ spec:
                 configMapKeyRef:
                   name: hello-world-config
                   key: greeting
+            - name: SPRING_CONFIG_IMPORT # Spring Boot 2.4+ config import, has to be the exact name
+              value: "optional:file:/etc/config/properties" # path inside the container
           volumeMounts:
             - name: app-data
               mountPath: /data # mount the volume at /data inside the container
@@ -68,6 +70,10 @@ spec:
               readOnly: true # mount the secret as read-only
             - name: config-volume
               mountPath: /etc/config # mount the config map at /etc/config
+              readOnly: true # mount the config map as read-only
+            - name: config-properties-volume
+              mountPath: /etc/config/properties
+              subPath: properties
               readOnly: true # mount the config map as read-only
       volumes:
         - name: app-data
