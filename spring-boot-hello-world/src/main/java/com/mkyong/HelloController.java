@@ -30,9 +30,13 @@ public class HelloController {
     private String username;
     @Value("${DB_PASSWORD}")
     private String password;
+    @Value("${GREETING}")
+    private String greeting;
 
     private static final Path USER_PATH = Path.of("/etc/creds/username");
     private static final Path PASS_PATH = Path.of("/etc/creds/password");
+
+    private static final Path GREETING_PATH = Path.of("/etc/config/greeting");
 
     private final SecretService secretService;
 
@@ -43,7 +47,8 @@ public class HelloController {
     @RequestMapping("/")
     String hello() {
         log.info("Accessed root endpoint");
-        return "Hello World, Spring Boot--username: " + username + ", password: " + password;
+        return "Hello World, Spring Boot--username: " + username + ", password: " + password + ", greeting: "
+                + greeting;
     }
 
     @GetMapping("/kubesecret")
@@ -81,6 +86,18 @@ public class HelloController {
         } catch (IOException e) {
             log.error("Failed to read secrets from files", e);
             return "Error reading secrets: " + e.getMessage();
+        }
+    }
+
+    @RequestMapping("/fileconfigmap ")
+    String fileconfigmap() {
+        log.info("Accessed fileconfigmap endpoint");
+        try {
+            String fileGreeting = Files.readString(GREETING_PATH).trim();
+            return "Read configmap from file: " + fileGreeting;
+        } catch (IOException e) {
+            log.error("Failed to read configmap from files", e);
+            return "Error reading configmaps: " + e.getMessage();
         }
     }
 

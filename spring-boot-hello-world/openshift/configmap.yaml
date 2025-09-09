@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-world-config
+  namespace: jackie
+data:
+  greeting: "Hello, OpenShift!" # Example configuration data

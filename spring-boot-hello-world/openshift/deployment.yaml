@@ -55,12 +55,20 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: password
+            - name: GREETING
+              valueFrom:
+                configMapKeyRef:
+                  name: hello-world-config
+                  key: greeting
           volumeMounts:
             - name: app-data
               mountPath: /data # mount the volume at /data inside the container
             - name: db-secret-volume
               mountPath: /etc/creds # mount the secret at /etc/creds
               readOnly: true # mount the secret as read-only
+            - name: config-volume
+              mountPath: /etc/config # mount the config map at /etc/config
+              readOnly: true # mount the config map as read-only
       volumes:
         - name: app-data
           persistentVolumeClaim:
@@ -68,6 +76,9 @@ spec:
         - name: db-secret-volume
           secret:
             secretName: db-secret
+        - name: config-volume
+          configMap:
+            name: hello-world-config
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
