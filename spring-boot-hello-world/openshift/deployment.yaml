@@ -62,6 +62,15 @@ spec:
             #                  key: greeting
             - name: SPRING_CONFIG_IMPORT # Spring Boot 2.4+ config import, has to be the exact name
               value: "optional:file:/etc/config/app.properties" # path inside the container
+            - name: SERVER_PORT
+              value: "8443" # configure Spring Boot to use 8443
+            - name: SERVER_SSL_CERTIFICATE_PRIVATE_KEY
+              value: "/etc/tls/tls.key" # path inside the container
+            - name: SERVER_SSL_CERTIFICATE
+              value: "/etc/tls/tls.crt" # path inside the container
+            - name: SERVER_SSL_ENABLED
+              value: "true" # enable SSL
+
           volumeMounts:
             - name: app-data
               mountPath: /data # mount the volume at /data inside the container
@@ -75,6 +84,9 @@ spec:
               mountPath: /etc/config/app.properties
               subPath: app.properties
               readOnly: true # mount the config map as read-only
+            - name: serving-cert
+              mountPath: /etc/tls # mount the serving certificate secret at /etc/tls
+              readOnly: true # mount the secret as read-only
       volumes:
         - name: app-data
           persistentVolumeClaim:
@@ -85,6 +97,9 @@ spec:
         - name: config-volume
           configMap:
             name: hello-world-config
+        - name: serving-cert
+          secret:
+            secretName: hello-world-serving-cert
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

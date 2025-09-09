@@ -1,0 +1,36 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: hello-world
+  namespace: jackie
+  labels:
+    app: hello-world
+spec:
+  to:
+    kind: Service
+    name: hello-world
+  port:
+    targetPort: 8443
+  tls:
+    termination: reencrypt # Use 'reencrypt' for TLS between route and pod
+    destinationCACertificate: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDUTCCAjmgAwIBAgIIMIVY1fdd8wQwDQYJKoZIhvcNAQELBQAwNjE0MDIGA1UE
+      Awwrb3BlbnNoaWZ0LXNlcnZpY2Utc2VydmluZy1zaWduZXJAMTc1MjE0MDg2ODAe
+      Fw0yNTA3MTAwOTQ3NDdaFw0yNzA5MDgwOTQ3NDhaMDYxNDAyBgNVBAMMK29wZW5z
+      aGlmdC1zZXJ2aWNlLXNlcnZpbmctc2lnbmVyQDE3NTIxNDA4NjgwggEiMA0GCSqG
+      SIb3DQEBAQUAA4IBDwAwggEKAoIBAQCpO8M58TBQ8gOeRszE76rDSyFueraYidRE
+      x5VJ1IcE7fgPOqX2VUpGKTiBg9QQHXCb8hWyopUY1KMnYtIrMuw+iPC7ksVpcZKs
+      czJK5lgYz8B+rDJzGOcWasB+HUXBIG1B37DRPPqhEor93wNEalV/aIEJONEQZz4h
+      l3FIbyr3jo3Ud0q4Dcz4XZOCV6dxaUc+22HlbM8O/LLxAAao6yjzKiSJvrff5mU+
+      GPmuVIBxeT6JrwLrd0OwiNsCqLEU9dHemFIRYhZBEP1+1jHgQlWuIqFr6TipmwiH
+      2N1mGi+3Or9rjk1RDFbCL68sPlgqw3sZh+SzNGPIrmDN7NtrlyTDAgMBAAGjYzBh
+      MA4GA1UdDwEB/wQEAwICpDAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRmuX8I
+      tnz7oTvBfU9pwVMf7SeOfzAfBgNVHSMEGDAWgBRmuX8Itnz7oTvBfU9pwVMf7SeO
+      fzANBgkqhkiG9w0BAQsFAAOCAQEAHDz5AReOYaWR4nqYY5Fr580ShPXP9m+PD554
+      rnBoK4UNuK1nxvWcmXHqGcsDMc4i6EhVtipTByuwaUTswkKtMDSpRvAIL9MjNLHo
+      bnVRi1v4dR2GrpDgHoZRzcOOakb+AKu7aMjIw+vDGtU+9VM14FpFkTjQDLFiYMf0
+      542qtpH83Kzy8OdbMbv4rKMytnTkJatc9BOM87d8YpqQ04xmOVSk134OdXLyt5Qb
+      GSke4ZS/YWg+HSsQ0gYnWuIRbe0tnZvwWsBVgqEMpCRzPoN3Up3MyGPt1Q3MZDd+
+      t9i2I9IxDqEabDBECBoIbi5nwVyCCbH+2Z2qHwWrrK+YoEdnOA==
+      -----END CERTIFICATE-----
