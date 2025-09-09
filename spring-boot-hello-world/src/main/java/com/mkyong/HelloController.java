@@ -42,7 +42,7 @@ public class HelloController {
     private static final Path USER_PATH = Path.of("/etc/creds/username");
     private static final Path PASS_PATH = Path.of("/etc/creds/password");
 
-    private static final Path GREETING_PATH = Path.of("/etc/config/greeting");
+    // private static final Path GREETING_PATH = Path.of("/etc/config/greeting");
 
     private final SecretService secretService;
 
@@ -95,6 +95,7 @@ public class HelloController {
         }
     }
 
+    /*-
     @RequestMapping("/fileconfigmap")
     String fileconfigmap() {
         log.info("Accessed fileconfigmap endpoint");
@@ -106,6 +107,7 @@ public class HelloController {
             return "Error reading configmaps: " + e.getMessage();
         }
     }
+    */
 
     @GetMapping("/application.properties")
     public String getMessage() {
