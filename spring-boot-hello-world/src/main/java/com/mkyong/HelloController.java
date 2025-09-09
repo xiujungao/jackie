@@ -89,7 +89,7 @@ public class HelloController {
         }
     }
 
-    @RequestMapping("/fileconfigmap ")
+    @RequestMapping("/fileconfigmap")
     String fileconfigmap() {
         log.info("Accessed fileconfigmap endpoint");
         try {
