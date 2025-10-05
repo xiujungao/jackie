@@ -117,7 +117,7 @@ public class HelloController {
 
     @RequestMapping("/persistent")
     String readFile() throws IOException {
-        log.info("Accessed persistent endpoint");
+        log.info("Accessed persistent endpoint, FILE_PATH: " + FILE_PATH);
         // PVC is mounted at /pvc
         try {
             String content = "Hello, this is some text written at " + java.time.LocalDateTime.now();
