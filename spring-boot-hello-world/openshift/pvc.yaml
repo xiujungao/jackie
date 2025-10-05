@@ -9,3 +9,5 @@ spec:
   resources:
     requests:
       storage: 2Mi
+  volumeName: local-pv-hello-world # <-- hard bind to this PV. however, this is not recommended for production
+  storageClassName: "" # <-- disable dynamic provisioning

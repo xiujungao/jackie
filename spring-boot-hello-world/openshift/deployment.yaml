@@ -20,6 +20,7 @@ spec:
         app: hello-world
         deployment: hello-world
     spec:
+      # with serviceAccountName, the pod will use this ServiceAccount to get secret db-secret by its role and rolebinding
       serviceAccountName: hello-world-sa
       restartPolicy: Always
       containers:
@@ -43,8 +44,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: STORAGE_PATH
-              value: "/data" # path inside the container
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -72,8 +71,8 @@ spec:
               value: "true" # enable SSL
 
           volumeMounts:
-            - name: app-data
-              mountPath: /data # mount the volume at /data inside the container
+            - name: pvc-volume
+              mountPath: /pvc # mount the volume at /pvc inside the container
             - name: db-secret-volume
               mountPath: /etc/creds # mount the secret at /etc/creds
               readOnly: true # mount the secret as read-only
@@ -88,7 +87,7 @@ spec:
               mountPath: /etc/tls # mount the serving certificate secret at /etc/tls
               readOnly: true # mount the secret as read-only
       volumes:
-        - name: app-data
+        - name: pvc-volume
           persistentVolumeClaim:
             claimName: hello-world-pvc # reference to the PVC
         - name: db-secret-volume
@@ -99,7 +98,7 @@ spec:
             name: hello-world-config
         - name: serving-cert
           secret:
-            secretName: hello-world-serving-cert
+            secretName: hello-world-serving-cert # This secret is created by the Service annotation in service.yaml
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

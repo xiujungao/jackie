@@ -1,0 +1,15 @@
+// Landing.test.jsx
+import { expect, test } from "vitest";
+import { render } from "vitest-browser-react";
+import { MemoryRouter } from 'react-router-dom';
+import Landing from "/src/Landing";
+
+test("Landing renders content", () => {
+  const { getByRole } = render(
+    <MemoryRouter>
+        <Landing />
+    </MemoryRouter>);
+
+  const heading = getByRole("heading", {name: "Online shopping simplified", level: 1});
+  expect(heading).toBeInTheDocument();
+});

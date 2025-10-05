@@ -19,11 +19,11 @@ import java.util.Map;
 public class HelloController {
     private static final Logger log = LoggerFactory.getLogger(HelloController.class);
 
-    private static final Path FILE_PATH = Paths.get("/data/file1.txt");
+    private static final Path FILE_PATH = Paths.get("/pvc/file1.txt");
 
     // read from application.properties
     @Value("${app.message}")
-    private String message;
+    private String appMessage;
 
     // read from environment variables from secret
     @Value("${DB_USERNAME}")
@@ -112,13 +112,13 @@ public class HelloController {
     @GetMapping("/application.properties")
     public String getMessage() {
         log.info("Accessed application.properties endpoint");
-        return "Message: " + message;
+        return "Message: " + appMessage;
     }
 
     @RequestMapping("/persistent")
     String readFile() throws IOException {
         log.info("Accessed persistent endpoint");
-        // PVC is mounted at /data
+        // PVC is mounted at /pvc
         try {
             String content = "Hello, this is some text written at " + java.time.LocalDateTime.now();
             Files.writeString(FILE_PATH, content);
@@ -126,7 +126,7 @@ public class HelloController {
             content = Files.readString(FILE_PATH);
             return "File content--: " + content;
         } catch (IOException e) {
-            log.error("Failed to read file1.txt from /data", e);
+            log.error("Failed to read %s", FILE_PATH, e);
             return "Error reading file: " + e.getMessage();
         }
     }

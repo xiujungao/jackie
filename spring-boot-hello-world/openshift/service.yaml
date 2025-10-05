@@ -7,6 +7,8 @@ metadata:
     app: hello-world
   annotations:
     service.alpha.openshift.io/serving-cert-secret-name: hello-world-serving-cert
+    # once you create this Service, OpenShift will automatically create a secret named hello-world-serving-cert
+    # that contains the serving certificate and key for this Service
 spec:
   selector:
     app: hello-world

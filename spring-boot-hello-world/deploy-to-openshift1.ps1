@@ -27,6 +27,8 @@ oc delete is hello-world *> $null
 
 # Create a new build config using the remote image
 oc new-app $ImageStream --name=$AppName https://github.com/xiujungao/jackie.git --context-dir=spring-boot-hello-world --strategy=source
+#oc new-app registry.access.redhat.com/ubi8/openjdk-21:1.18 --name=hello-world https://github.com/xiujungao/jackie.git --context-dir=spring-boot-hello-world --strategy=source
+
 # This step can be break down into two steps:
 # oc create imagestream $AppName
 # oc create buildconfig hello-world \
