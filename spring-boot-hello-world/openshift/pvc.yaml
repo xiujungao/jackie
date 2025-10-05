@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: hello-world-pvc
+  name: hello-world-pvc-sc
   namespace: jackie
 spec:
   accessModes:
@@ -9,5 +9,3 @@ spec:
   resources:
     requests:
       storage: 2Mi
-  volumeName: local-pv-hello-world # <-- hard bind to this PV. however, this is not recommended for production
-  storageClassName: "" # <-- disable dynamic provisioning

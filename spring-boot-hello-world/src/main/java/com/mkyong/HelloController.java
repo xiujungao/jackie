@@ -126,7 +126,7 @@ public class HelloController {
             content = Files.readString(FILE_PATH);
             return "File content--: " + content;
         } catch (IOException e) {
-            log.error("Failed to read %s", FILE_PATH, e);
+            log.error("Failed to read " + FILE_PATH, e);
             return "Error reading file: " + e.getMessage();
         }
     }

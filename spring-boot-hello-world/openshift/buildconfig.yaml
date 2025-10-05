@@ -10,7 +10,7 @@ spec:
     type: Git
     git:
       uri: https://github.com/xiujungao/jackie.git
-      ref: main
+      ref: master
     contextDir: spring-boot-hello-world
   strategy:
     type: source

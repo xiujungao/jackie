@@ -89,7 +89,7 @@ spec:
       volumes:
         - name: pvc-volume
           persistentVolumeClaim:
-            claimName: hello-world-pvc # reference to the PVC
+            claimName: hello-world-pvc-sc # reference to the PVC
         - name: db-secret-volume
           secret:
             secretName: db-secret
