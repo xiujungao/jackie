@@ -35,9 +35,7 @@ export async function createInvoice(formData: FormData) {
     `;
   } catch (error) {
     console.error('Error creating invoice:', error);
-    return {
-      message: 'Database error occurred while creating the invoice.',
-    }
+    throw new Error('Database error occurred while creating the invoice.');
   }
   
   revalidatePath('/dashboard/invoices');
@@ -59,9 +57,7 @@ export async function updateInvoice(id: string, formData: FormData) {
     `;
   } catch (error) {
     console.error('Error fetching invoice:', error);
-    return {  
-      message: 'Database error occurred while fetching the invoice.',
-    }
+    throw new Error('Database error occurred while updating the invoice.');
   }
   
   revalidatePath('/dashboard/invoices');
