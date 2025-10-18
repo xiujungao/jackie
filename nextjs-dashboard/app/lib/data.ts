@@ -98,6 +98,7 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
+    /*
     const sqlString = `
       SELECT
         invoices.id,
@@ -119,8 +120,9 @@ export async function fetchFilteredInvoices(
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
     console.log('Executing SQL:', sqlString);
-
-    // const invoices = await sql.unsafe(sqlString) as InvoicesTable[];
+    
+    const invoices = await sql.unsafe(sqlString) as InvoicesTable[];
+    */
 
     const invoices = await sql<InvoicesTable[]>`
       SELECT
