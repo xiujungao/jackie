@@ -33,7 +33,7 @@ export async function fetchRevenue() {
 export async function fetchLatestInvoices() {
   try {
     console.log('Fetching Latest invoces data...');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
@@ -98,6 +98,30 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
+    const sqlString = `
+      SELECT
+        invoices.id,
+        invoices.amount,
+        invoices.date,
+        invoices.status,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE
+        customers.name ILIKE '${`%${query}%`}' OR
+        customers.email ILIKE '${`%${query}%`}' OR
+        invoices.amount::text ILIKE '${`%${query}%`}' OR
+        invoices.date::text ILIKE '${`%${query}%`}' OR
+        invoices.status ILIKE '${`%${query}%`}'
+      ORDER BY invoices.date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+    console.log('Executing SQL:', sqlString);
+
+    // const invoices = await sql.unsafe(sqlString) as InvoicesTable[];
+
     const invoices = await sql<InvoicesTable[]>`
       SELECT
         invoices.id,

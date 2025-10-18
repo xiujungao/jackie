@@ -11,6 +11,7 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
   const invoices = await fetchFilteredInvoices(query, currentPage);
 
   return (
