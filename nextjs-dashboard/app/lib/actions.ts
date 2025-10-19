@@ -31,6 +31,11 @@ export type State = {
     status?: string[];
   };
   message?: string | null;
+  fields?: {
+    customerId?: string;
+    amount?: string;
+    status?: 'pending' | 'paid';
+  };
 };
 
 export async function createInvoice(prevState: State, formData: FormData) : Promise<State> {
@@ -47,6 +52,11 @@ export async function createInvoice(prevState: State, formData: FormData) : Prom
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Invoice.',
+      fields: {
+        customerId: String(formData.get('customerId') || ''),
+        amount: String(formData.get('amount') || ''),
+        status: (formData.get('status') as 'pending' | 'paid') || undefined,
+      },
     };
   }
 
@@ -69,6 +79,11 @@ export async function createInvoice(prevState: State, formData: FormData) : Prom
     console.error('Error creating invoice:', error);
     return {
       message: 'Database Error: Failed to Create Invoice.',
+      fields: {
+        customerId: String(formData.get('customerId') || ''),
+        amount: String(formData.get('amount') || ''),
+        status: (formData.get('status') as 'pending' | 'paid') || undefined,
+      },
     };
   }
   
