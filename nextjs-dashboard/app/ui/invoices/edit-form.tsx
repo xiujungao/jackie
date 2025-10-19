@@ -144,6 +144,10 @@ export default function EditInvoiceForm({
               ))}
           </div>
         </fieldset>
+      </div>
+
+      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+        <hr></hr>
         <div id="message-error" aria-live="polite" aria-atomic="true">
           {state.message &&
               <p className="mt-2 text-sm text-red-500" key={state.message}>
@@ -152,6 +156,7 @@ export default function EditInvoiceForm({
             }
         </div>
       </div>
+
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard/invoices"

@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createInvoice, State } from '@/app/lib/actions';
-import { useActionState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { init } from 'next/dist/compiled/webpack/webpack';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
@@ -27,10 +27,11 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           </label>
           <div className="relative">
             <select
+              key={state.fields?.customerId ?? 'empty'} 
               id="customer"
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
+              defaultValue={state.fields?.customerId ?? ''}
               aria-describedby="customer-error"
             >
               <option value="" disabled>
@@ -97,6 +98,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                   name="status"
                   type="radio"
                   value="pending"
+                  defaultChecked={state.fields?.status === 'pending'}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
                 />
@@ -113,6 +115,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                   name="status"
                   type="radio"
                   value="paid"
+                  defaultChecked={state.fields?.status === 'paid'}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
                 />
@@ -134,6 +137,9 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               ))}
           </div>
         </fieldset>
+      </div>
+      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+        <hr></hr>
         <div id="message-error" aria-live="polite" aria-atomic="true">
           {state.message &&
               <p className="mt-2 text-sm text-red-500" key={state.message}>

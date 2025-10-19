@@ -39,35 +39,43 @@ export type State = {
 };
 
 export async function createInvoice(prevState: State, formData: FormData) : Promise<State> {
-  // Validate form fields using Zod
-  const validatedFields = CreateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-  console.log('Validated Fields:', validatedFields);
-
-  // If form validation fails, return errors early. Otherwise, continue.
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
-      fields: {
-        customerId: String(formData.get('customerId') || ''),
-        amount: String(formData.get('amount') || ''),
-        status: (formData.get('status') as 'pending' | 'paid') || undefined,
-      },
-    };
-  }
-
+  /*
   // Prepare data for insertion into the database
   const { customerId, amount, status } = CreateInvoice.parse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
+  */
 
-  const amountInCents = amount * 100;
+  const customerId = formData.get('customerId') ?.toString() ?? null;
+  const amount     = (formData.get('amount') ?? '').toString();
+  const status     = (formData.get('status') ?. toString() as 'pending' | 'paid') ?? null;
+  console.log('Form Data:', { customerId, amount, status });
+
+  // Validate form fields using Zod
+  const validatedFields = CreateInvoice.safeParse({
+    customerId,
+    amount,
+    status,
+  });
+  console.log('Validated Fields:', validatedFields);
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    console.log('customerId in state fields:', customerId ?? '');
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Invoice.',
+      fields: {
+        customerId: customerId ?? '',
+        amount,
+        status,
+      },
+    };
+  }
+
+  const amountInCents = Number(amount) * 100;
   const date = new Date().toISOString().split('T')[0];
 
   try {
@@ -80,9 +88,9 @@ export async function createInvoice(prevState: State, formData: FormData) : Prom
     return {
       message: 'Database Error: Failed to Create Invoice.',
       fields: {
-        customerId: String(formData.get('customerId') || ''),
-        amount: String(formData.get('amount') || ''),
-        status: (formData.get('status') as 'pending' | 'paid') || undefined,
+        customerId: customerId ?? '',
+        amount,
+        status,
       },
     };
   }
@@ -92,11 +100,24 @@ export async function createInvoice(prevState: State, formData: FormData) : Prom
 }
 
 export async function updateInvoice(id: string, prevState: State, formData: FormData) : Promise<State> {
-  // Validate form fields using Zod
-  const validatedFields = UpdateInvoice.safeParse({
+  /*
+  // Prepare data for updating the database
+  const { customerId, amount, status } = UpdateInvoice.parse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
+  });
+  */
+
+  const customerId = formData.get('customerId') ?.toString() ?? null;
+  const amount     = (formData.get('amount') ?? '').toString();
+  const status     = (formData.get('status') ?. toString() as 'pending' | 'paid') ?? null;
+
+  // Validate form fields using Zod
+  const validatedFields = UpdateInvoice.safeParse({
+    customerId,
+    amount,
+    status,
   });
   console.log('Validated Fields:', validatedFields);
 
@@ -105,19 +126,17 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Invoice.',
+      fields: {
+        customerId: customerId ?? '',
+        amount,
+        status,
+      },
     };
   }
 
-  // Prepare data for updating the database
-  const { customerId, amount, status } = UpdateInvoice.parse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-
   console.log('Updating invoice with data:', { id, customerId, amount, status });
  
-  const amountInCents = amount * 100;
+  const amountInCents = Number(amount) * 100;
  
   try {
     await sql`
@@ -129,6 +148,11 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
     console.error('Error fetching invoice:', error);
     return {
       message: 'Database Error: Failed to Update Invoice.',
+      fields: {
+        customerId: customerId ?? '',
+        amount,
+        status,
+      },
     };
   }
   
