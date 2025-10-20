@@ -17,5 +17,5 @@ export const authConfig = {
       return true;
     },
   },
-  providers: [], // Add providers with an empty array for now
+  providers: [], // Add providers with an empty array here, in auth.ts, it will be overridden
 } satisfies NextAuthConfig;
