@@ -1,16 +1,29 @@
-apiVersion: route.openshift.io/v1
 kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
   name: nextjs-dashboard
   namespace: jackie
+  uid: db7586f2-01f6-4a96-ba40-10ee32d77abe
+  resourceVersion: "1104551"
+  creationTimestamp: "2025-10-21T16:19:25Z"
   labels:
     app: nextjs-dashboard
+    app.kubernetes.io/component: nextjs-dashboard
+    app.kubernetes.io/instance: nextjs-dashboard
+    deployment: nextjs-dashboard
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"route.openshift.io/v1","kind":"Route","metadata":{"annotations":{},"labels":{"app":"nextjs-dashboard","deployment":"nextjs-dashboard"},"name":"nextjs-dashboard","namespace":"jackie"},"spec":{"port":{"targetPort":"http"},"tls":{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"},"to":{"kind":"Service","name":"nextjs-dashboard"}}}
+    openshift.io/host.generated: "true"
 spec:
+  host: nextjs-dashboard-jackie.apps-crc.testing
   to:
     kind: Service
     name: nextjs-dashboard
+    weight: 100
   port:
     targetPort: http
   tls:
-    termination: edge # Use 'edge' to terminate TLS at the router
+    termination: edge
     insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

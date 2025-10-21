@@ -37,6 +37,12 @@ spec:
                 secretKeyRef:
                   name: nextjs-dashboard-secret
                   key: AUTH_SECRET
+            - name: AUTH_TRUST_HOST
+              value: "true"
+            - name: NEXTAUTH_URL
+              value: "https://nextjs-dashboard-jackie.apps-crc.testing"
+            - name: AUTH_URL
+              value: "https://nextjs-dashboard-jackie.apps-crc.testing"
           resources: {}
           command: ["node"]
           args: [".next/standalone/server.js"]

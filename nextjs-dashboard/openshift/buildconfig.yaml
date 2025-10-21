@@ -1,30 +1,90 @@
-apiVersion: build.openshift.io/v1
 kind: BuildConfig
+apiVersion: build.openshift.io/v1
 metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+  resourceVersion: "1104802"
   name: nextjs-dashboard
+  uid: d8a2d1b8-7728-4317-a4a4-2d4f709d9c9a
+  creationTimestamp: "2025-10-21T18:03:31Z"
+  generation: 2
+  managedFields:
+    - manager: oc.exe
+      operation: Update
+      apiVersion: build.openshift.io/v1
+      time: "2025-10-21T18:03:31Z"
+      fieldsType: FieldsV1
+      fieldsV1:
+        "f:metadata":
+          "f:annotations":
+            .: {}
+            "f:openshift.io/generated-by": {}
+          "f:labels":
+            .: {}
+            "f:app": {}
+            "f:app.kubernetes.io/component": {}
+            "f:app.kubernetes.io/instance": {}
+        "f:spec":
+          "f:output":
+            "f:to": {}
+          "f:runPolicy": {}
+          "f:source":
+            "f:contextDir": {}
+            "f:git":
+              .: {}
+              "f:ref": {}
+              "f:uri": {}
+            "f:type": {}
+          "f:strategy":
+            "f:sourceStrategy":
+              .: {}
+              "f:from": {}
+            "f:type": {}
+          "f:triggers": {}
+    - manager: openshift-apiserver
+      operation: Update
+      apiVersion: build.openshift.io/v1
+      time: "2025-10-21T18:03:31Z"
+      fieldsType: FieldsV1
+      fieldsV1:
+        "f:status":
+          "f:imageChangeTriggers": {}
+          "f:lastVersion": {}
   namespace: jackie
   labels:
     app: nextjs-dashboard
+    app.kubernetes.io/component: nextjs-dashboard
+    app.kubernetes.io/instance: nextjs-dashboard
 spec:
-  source:
-    type: Git
-    git:
-      uri: https://github.com/xiujungao/jackie.git
-      ref: openshift
-    contextDir: nextjs-dashboard
-  strategy:
-    type: source
-    sourceStrategy:
-      from:
-        kind: ImageStreamTag
-        name: "nodejs-20:latest"
+  nodeSelector: null
   output:
     to:
       kind: ImageStreamTag
       name: "nextjs-dashboard:latest"
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: "nodejs-20:latest"
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: "https://github.com/xiujungao/jackie.git"
+      ref: openshift
+    contextDir: nextjs-dashboard
   triggers:
     - type: GitHub
       github:
-        secret: manage
+        secret: B5xVqo2u1M-HPO27ixCp
+    - type: Generic
+      generic:
+        secret: w7Iw2MVmhG5FufpgFIoc
     - type: ConfigChange
     - type: ImageChange
+      imageChange: {}
+  runPolicy: Serial
