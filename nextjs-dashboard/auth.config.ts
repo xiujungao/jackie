@@ -17,5 +17,7 @@ export const authConfig = {
       return true;
     },
   },
+  secret: process.env.AUTH_SECRET,
+  trustHost: true,
   providers: [], // Add providers with an empty array here, in auth.ts, it will be overridden
 } satisfies NextAuthConfig;

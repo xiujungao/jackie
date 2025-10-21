@@ -53,6 +53,10 @@ oc set env deploy/nextjs-dashboard PORT=8080
 # Mount your DB/NextAuth secrets
 oc set env deploy/nextjs-dashboard --from=secret/nextjs-dashboard-secret -n jackie
 
+# Set additional environment variables
+# Auth.js (NextAuth v5 beta) refuses requests unless the host is trusted
+oc -n jackie set env deploy/nextjs-dashboard AUTH_TRUST_HOST=true NEXTAUTH_URL=https://nextjs-dashboard-jackie.apps-crc.testing AUTH_URL=https://nextjs-dashboard-jackie.apps-crc.testing
+
 # Expose a route to access the app
 oc expose svc/$AppName
 oc rollout status deploy/nextjs-dashboard -n jackie
