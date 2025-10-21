@@ -1,0 +1,54 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nextjs-dashboard
+  namespace: jackie
+  labels:
+    app: nextjs-dashboard
+    deployment: nextjs-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: nextjs-dashboard
+  template:
+    metadata:
+      labels:
+        deployment: nextjs-dashboard
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+    spec:
+      containers:
+        - name: nextjs-dashboard
+          image: "image-registry.openshift-image-registry.svc:5000/jackie/nextjs-dashboard"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "8080"
+            - name: POSTGRES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: nextjs-dashboard-secret
+                  key: POSTGRES_URL
+            - name: AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: nextjs-dashboard-secret
+                  key: AUTH_SECRET
+          resources: {}
+          command: ["node"]
+          args: [".next/standalone/server.js"]
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

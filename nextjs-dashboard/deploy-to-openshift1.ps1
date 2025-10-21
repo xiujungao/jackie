@@ -27,7 +27,7 @@ oc delete is hello-world *> $null
 
 # Create a new build config using the remote image
 oc new-app $ImageStream --name=$AppName https://github.com/xiujungao/jackie.git#openshift --context-dir=nextjs-dashboard --strategy=source
-#oc new-app registry.redhat.io/ubi8/nodejs-20:latest --name=nextjs-dashbaord https://github.com/xiujungao/jackie.git#openshift --context-dir=nextjs-dashboard --strategy=source
+#oc new-app registry.redhat.io/ubi8/nodejs-20:latest --name=nextjs-dashboard https://github.com/xiujungao/jackie.git#openshift --context-dir=nextjs-dashboard --strategy=source
 
 # This step can be break down into two steps:
 # oc create imagestream $AppName
@@ -47,8 +47,17 @@ oc logs -f buildconfig/$AppName
 # Once the build succeeds, the app will deploy as a pod. Check the status
 oc get pods
 
+# Next.js standalone honors PORT; S2I defaults to 8080, keep it consistent:
+oc set env deploy/nextjs-dashboard PORT=8080
+
+# Mount your DB/NextAuth secrets
+oc set env deploy/nextjs-dashboard --from=secret/nextjs-dashboard-secret -n jackie
+
 # Expose a route to access the app
 oc expose svc/$AppName
+oc rollout status deploy/nextjs-dashboard -n jackie
+oc get route nextjs-dashboard -n jackie -o jsonpath="{.spec.host}{'\n'}"
+oc get endpoints nextjs-dashboard -n jackie
 
 # Expose a route with TLS/SSL
 oc create route edge $AppName --service=$AppName --port=3000 #--cert=path/to/cert.crt --key=path/to/key.key --ca-cert=path/to/ca.crt

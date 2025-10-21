@@ -1,0 +1,38 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+  name: nextjs-dashboard
+  namespace: jackie
+  labels:
+    app: nextjs-dashboard
+  sourceStrategy:
+    from:
+      kind: ImageStreamTag
+      name: "nodejs-20:latest"
+spec:
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: "nodejs-20:latest"
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: "https://github.com/xiujungao/jackie.git"
+      ref: openshift
+    contextDir: nextjs-dashboard
+  triggers:
+    - type: GitHub
+      github:
+        secret: manage
+    - type: ConfigChange
+    - type: ImageChange
+      imageChange: {}
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "nextjs-dashboard:latest"

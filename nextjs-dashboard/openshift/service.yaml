@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjs-dashboard
+  namespace: jackie
+  labels:
+    app: nextjs-dashboard
+  annotations:
+    #service.alpha.openshift.io/serving-cert-secret-name: nextjs-dashboard-serving-cert
+    # once you create this Service, OpenShift will automatically create a secret named hello-world-serving-cert
+    # that contains the serving certificate and key for this Service
+spec:
+  selector:
+    app: nextjs-dashboard
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80 # Service port
+      targetPort: 8080 # Container port
